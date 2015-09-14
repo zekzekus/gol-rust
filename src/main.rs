@@ -1,9 +1,9 @@
 use std::collections::BTreeMap;
 
-// A sorted tree map to hold game board.
-// Key: tuple of integers to keep coordinates of a cell
-// Value: Single char to represent state.
-type Grid = BTreeMap<(i32, i32), char>;
+// a sorted tree map to represent whole game board
+// coordinated by tuples of integers. Dead or Alive status 
+// 1 and 0.
+type Grid = BTreeMap<(i32, i32), i32>;
 
 #[derive(Debug)]
 struct World {
@@ -18,9 +18,9 @@ impl World {
         for x in 0..width {
             for y in 0..height {
                 if x == 1 {
-                    grid.insert((x, y), '#');
+                    grid.insert((x, y), 1);
                 } else {
-                    grid.insert((x, y), '-');
+                    grid.insert((x, y), 0);
                 }
             }
         }
