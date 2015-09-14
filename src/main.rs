@@ -38,6 +38,25 @@ impl World {
         }
         print!("\n");
     }
+
+    fn next(self) -> World {
+        let mut next_grid: Grid = Grid::new();
+        for (key, state) in self.grid.iter() {
+            let mut total_state: i32 = 0;
+            let mut new_state: i32 = *state;
+            for n in neighbours(*key, self.width, self.height) {
+                let state = self.grid.get(&n).unwrap();
+                total_state += *state;
+            }
+            if *state == 1 && (total_state < 2 || total_state > 3) {
+                new_state = 0;
+            } else if *state == 0 && total_state == 3 {
+                new_state = 1;
+            }
+            next_grid.insert(*key, new_state);
+        }
+        World{width: self.width, height: self.height, grid: next_grid}
+    }
 }
 
 fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
@@ -58,9 +77,12 @@ fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i
 }
 
 fn main() {
-    let world: World = World::new(3, 3);
-    println!("Hello, world!");
-    println!("{:?}", world);
+    let mut world: World = World::new(3, 3);
+    println!("initial world");
     world.print();
-    println!("{:?}", neighbours((0, 0), 3, 3));
+    for i in 1..5 {
+        println!("{}. iteration", i);
+        world = world.next();
+        world.print();
+    }
 }
