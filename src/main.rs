@@ -89,8 +89,7 @@ fn main() {
     let mut world: World = World::new(47, 94);
     println!("initial world");
     world.print();
-    for i in 1..50 {
-        println!("{}. iteration", i);
+    for i in 1..100 {
         world = world.next();
         world.print();
         sleep_ms(50);
