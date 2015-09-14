@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-type Grid = BTreeMap<(i32, i32), bool>;
+type Grid = BTreeMap<(i32, i32), char>;
 
 #[derive(Debug)]
 struct World {
@@ -15,9 +15,9 @@ impl World {
         for x in 0..width {
             for y in 0..height {
                 if x == 1 {
-                    grid.insert((x, y), true);
+                    grid.insert((x, y), '#');
                 } else {
-                    grid.insert((x, y), false);
+                    grid.insert((x, y), '-');
                 }
             }
         }
@@ -25,9 +25,15 @@ impl World {
     }
 
     fn print(&self) {
+        let mut tx = 0;
         for (key, value) in self.grid.iter() {
-            println!("{:?}-{:?}", key, value);
+            if key.0 != tx {
+                tx = key.0;
+                print!("\n");
+            }
+            print!("{}", value);
         }
+        print!("\n");
     }
 }
 
