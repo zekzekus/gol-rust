@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::thread::sleep_ms;
 
 // a sorted tree map to represent whole game board
 // coordinated by tuples of integers. Dead or Alive status 
@@ -17,7 +18,11 @@ impl World {
         let mut grid = Grid::new();
         for x in 0..width {
             for y in 0..height {
-                if x == 1 {
+                if x == 1 && y == 2 {
+                    grid.insert((x, y), 1);
+                } else if x == 2 && y == 3 {
+                    grid.insert((x, y), 1);
+                } else if x == 3 && (y == 1 || y == 2 || y == 3) {
                     grid.insert((x, y), 1);
                 } else {
                     grid.insert((x, y), 0);
@@ -34,7 +39,11 @@ impl World {
                 tx = key.0;
                 print!("\n");
             }
-            print!("{}", value);
+            if *value == 1 {
+                print!("#");
+            } else {
+                print!("-");
+            }
         }
         print!("\n");
     }
@@ -77,12 +86,13 @@ fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i
 }
 
 fn main() {
-    let mut world: World = World::new(3, 3);
+    let mut world: World = World::new(47, 94);
     println!("initial world");
     world.print();
-    for i in 1..5 {
+    for i in 1..50 {
         println!("{}. iteration", i);
         world = world.next();
         world.print();
+        sleep_ms(50);
     }
 }
