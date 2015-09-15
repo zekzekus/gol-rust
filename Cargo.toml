@@ -2,3 +2,6 @@
 name = "bedelliv2"
 version = "0.1.0"
 authors = ["Zekeriya Koc <zekzekus@gmail.com>"]
+
+[dependencies]
+rand = "*"

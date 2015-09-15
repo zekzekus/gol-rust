@@ -13,10 +13,10 @@ fn main() {
     let width = args[1].parse::<i32>().unwrap();
     let height = args[2].parse::<i32>().unwrap();
 
-    let mut world: World = World::new(width, height, Seeder::Glider);
+    let mut world: World = World::new(width, height, Seeder::Random);
     println!("initial world");
     world.print();
-    for _ in 1..100 {
+    for _ in 1.. {
         world = world.next();
         world.print();
         sleep_ms(50);

@@ -30,7 +30,7 @@ impl World {
                 print!("\n");
             }
             if *value == 1 {
-                print!("#");
+                print!("O");
             } else {
                 print!("-");
             }
