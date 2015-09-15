@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 use std::thread::sleep_ms;
+use std::env;
 
 // a sorted tree map to represent whole game board
 // coordinated by tuples of integers. Dead or Alive status 
@@ -18,12 +19,19 @@ enum Seeder {
     Glider,
 }
 
+impl Seeder {
+    fn seed(&self, width: i32, height: i32) -> Grid {
+        let grid = match *self {
+            Seeder::Glider => grid_glider(width, height),
+            _ => panic!("not implemented"),
+        };
+        grid
+    }
+}
+
 impl World {
     fn new(width: i32, height: i32, seeder: Seeder) -> World {
-        let grid = match seeder {
-            Seeder::Glider => grid_glider(width, height),
-            _ => panic!("Not implemented"),
-        };
+        let grid = seeder.seed(width, height);
         World{width: width, height: height, grid: grid}
     }
 
@@ -43,7 +51,7 @@ impl World {
         print!("\n");
     }
 
-    fn next(self) -> World {
+    fn next(&self) -> World {
         let mut next_grid: Grid = Grid::new();
         for (key, state) in self.grid.iter() {
             let mut total_state: i32 = 0;
@@ -99,7 +107,14 @@ fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i
 }
 
 fn main() {
-    let mut world: World = World::new(47, 94, Seeder::Glider);
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 3 {
+        panic!("at least two arguments required! width and height");
+    }
+    let width = args[1].parse::<i32>().unwrap();
+    let height = args[2].parse::<i32>().unwrap();
+
+    let mut world: World = World::new(width, height, Seeder::Glider);
     println!("initial world");
     world.print();
     for _ in 1..100 {
