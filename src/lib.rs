@@ -1,9 +1,13 @@
+pub mod seeder;
+
+pub use seeder::Seeder;
+
 use std::collections::BTreeMap;
 
 // a sorted tree map to represent whole game board
 // coordinated by tuples of integers. Dead or Alive status 
 // 1 and 0.
-type Grid = BTreeMap<(i32, i32), i32>;
+pub type Grid = BTreeMap<(i32, i32), i32>;
 
 #[derive(Debug)]
 pub struct World {
@@ -12,23 +16,8 @@ pub struct World {
     grid: Grid,
 }
 
-pub enum Seeder {
-    Random,
-    Glider,
-}
-
-impl Seeder {
-    fn seed(&self, width: i32, height: i32) -> Grid {
-        let grid = match *self {
-            Seeder::Glider => grid_glider(width, height),
-            _ => panic!("not implemented"),
-        };
-        grid
-    }
-}
-
 impl World {
-    pub fn new(width: i32, height: i32, seeder: Seeder) -> World {
+    pub fn new(width: i32, height: i32, seeder: seeder::Seeder) -> World {
         let grid = seeder.seed(width, height);
         World{width: width, height: height, grid: grid}
     }
@@ -67,24 +56,6 @@ impl World {
         }
         World{width: self.width, height: self.height, grid: next_grid}
     }
-}
-
-fn grid_glider(width: i32, height: i32) -> Grid {
-    let mut grid = Grid::new();
-    for x in 0..width {
-        for y in 0..height {
-            if x == 1 && y == 2 {
-                grid.insert((x, y), 1);
-            } else if x == 2 && y == 3 {
-                grid.insert((x, y), 1);
-            } else if x == 3 && (y == 1 || y == 2 || y == 3) {
-                grid.insert((x, y), 1);
-            } else {
-                grid.insert((x, y), 0);
-            }
-        }
-    }
-    grid
 }
 
 fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
