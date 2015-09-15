@@ -13,22 +13,17 @@ struct World {
     grid: Grid,
 }
 
+enum Seeder {
+    Random,
+    Glider,
+}
+
 impl World {
-    fn new(width: i32, height: i32) -> World {
-        let mut grid = Grid::new();
-        for x in 0..width {
-            for y in 0..height {
-                if x == 1 && y == 2 {
-                    grid.insert((x, y), 1);
-                } else if x == 2 && y == 3 {
-                    grid.insert((x, y), 1);
-                } else if x == 3 && (y == 1 || y == 2 || y == 3) {
-                    grid.insert((x, y), 1);
-                } else {
-                    grid.insert((x, y), 0);
-                }
-            }
-        }
+    fn new(width: i32, height: i32, seeder: Seeder) -> World {
+        let grid = match seeder {
+            Seeder::Glider => grid_glider(width, height),
+            _ => panic!("Not implemented"),
+        };
         World{width: width, height: height, grid: grid}
     }
 
@@ -68,6 +63,24 @@ impl World {
     }
 }
 
+fn grid_glider(width: i32, height: i32) -> Grid {
+    let mut grid = Grid::new();
+    for x in 0..width {
+        for y in 0..height {
+            if x == 1 && y == 2 {
+                grid.insert((x, y), 1);
+            } else if x == 2 && y == 3 {
+                grid.insert((x, y), 1);
+            } else if x == 3 && (y == 1 || y == 2 || y == 3) {
+                grid.insert((x, y), 1);
+            } else {
+                grid.insert((x, y), 0);
+            }
+        }
+    }
+    grid
+}
+
 fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
     let mut points: Vec<(i32, i32)> = Vec::new();
     let range = vec![-1i32, 0i32, 1i32];
@@ -86,10 +99,10 @@ fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i
 }
 
 fn main() {
-    let mut world: World = World::new(47, 94);
+    let mut world: World = World::new(47, 94, Seeder::Glider);
     println!("initial world");
     world.print();
-    for i in 1..100 {
+    for _ in 1..100 {
         world = world.next();
         world.print();
         sleep_ms(50);
