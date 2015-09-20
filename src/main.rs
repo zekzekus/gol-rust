@@ -1,3 +1,5 @@
+#![feature(plugin)]
+#![plugin(clippy)]
 extern crate bedelliv2;
 
 use std::env;
