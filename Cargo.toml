@@ -6,3 +6,6 @@ authors = ["Zekeriya Koc <zekzekus@gmail.com>"]
 [dependencies]
 rand = "*"
 clippy = "*"
+
+[dependencies.tcod]
+git = "https://github.com/tomassedovic/tcod-rs"

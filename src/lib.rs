@@ -12,7 +12,7 @@ pub type Grid = BTreeMap<(i32, i32), i32>;
 pub struct World {
     width: i32,
     height: i32,
-    grid: Grid,
+    pub grid: Grid,
 }
 
 impl World {
