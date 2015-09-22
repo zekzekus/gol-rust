@@ -9,7 +9,6 @@ use std::collections::BTreeMap;
 // 1 and 0.
 pub type Grid = BTreeMap<(i32, i32), i32>;
 
-#[derive(Debug)]
 pub struct World {
     width: i32,
     height: i32,
@@ -17,7 +16,7 @@ pub struct World {
 }
 
 impl World {
-    pub fn new(width: i32, height: i32, seeder: seeder::Seeder) -> World {
+    pub fn new(width: i32, height: i32, seeder: seeder::Seeder) -> Self {
         let grid = seeder.seed(width, height);
         World{width: width, height: height, grid: grid}
     }
@@ -38,7 +37,7 @@ impl World {
         print!("\n");
     }
 
-    pub fn next(&self) -> World {
+    pub fn next(&self) -> Self {
         let mut next_grid: Grid = Grid::new();
         for (key, state) in self.grid.iter() {
             let mut total_state: i32 = 0;
