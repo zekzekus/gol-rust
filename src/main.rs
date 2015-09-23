@@ -28,7 +28,7 @@ fn main() {
         .title("Conway Game of Life")
         .init();
 
-    let mut world: World = World::new(width, height, Seeder::Random);
+    let mut world: World = World::new(width, height, Seeder::Random, "B3S23");
 
     system::set_fps(30);
     world.render(&mut con);

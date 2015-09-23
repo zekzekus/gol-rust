@@ -7,6 +7,7 @@ pub mod seeder;
 pub use seeder::Seeder;
 
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 use tcod::{Console, RootConsole};
 use tcod::BackgroundFlag;
@@ -16,16 +17,18 @@ use tcod::BackgroundFlag;
 // 1 and 0.
 pub type Grid = BTreeMap<(i32, i32), i32>;
 
-pub struct World {
+pub struct World<'a> {
     width: i32,
     height: i32,
     pub grid: Grid,
+    rule: &'a str,
 }
 
-impl World {
-    pub fn new(width: i32, height: i32, seeder: seeder::Seeder) -> Self {
+impl<'a> World<'a> {
+    pub fn new(width: i32, height: i32, seeder: seeder::Seeder,
+               rule: &'a str) -> Self {
         let grid = seeder.seed(width, height);
-        World{width: width, height: height, grid: grid}
+        World{width: width, height: height, grid: grid, rule: rule}
     }
 
     pub fn print(&self) {
@@ -46,21 +49,30 @@ impl World {
 
     pub fn next(&self) -> Self {
         let mut next_grid: Grid = Grid::new();
+        let mut born_map: HashMap<i32, i32> = HashMap::new();
+        let mut stay_map: HashMap<i32, i32> = HashMap::new();
+        born_map.insert(2, 0);
+        born_map.insert(3, 0);
+        stay_map.insert(3, 0);
+
         for (key, state) in &self.grid {
             let mut total_state: i32 = 0;
-            let mut new_state: i32 = *state;
+            let new_state: i32;
             for n in neighbours(*key, self.width, self.height) {
                 let state = self.grid.get(&n).unwrap();
                 total_state += *state;
             }
-            if *state == 1 && (total_state < 2 || total_state > 3) {
-                new_state = 0;
-            } else if *state == 0 && total_state == 3 {
+            if *state == 1 && (born_map.contains_key(&total_state)) {
                 new_state = 1;
+            } else if *state == 0 && (stay_map.contains_key(&total_state)){
+                new_state = 1;
+            } else {
+                new_state = 0;
             }
             next_grid.insert(*key, new_state);
         }
-        World{width: self.width, height: self.height, grid: next_grid}
+        World{width: self.width, height: self.height, grid: next_grid,
+              rule: self.rule}
     }
 
     pub fn render(&self, console: &mut RootConsole) {
