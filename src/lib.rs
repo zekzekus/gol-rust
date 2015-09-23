@@ -24,6 +24,22 @@ pub struct World<'a> {
     rule: &'a str,
 }
 
+struct Rule {
+    borns: HashMap<i32, i32>,
+    stays: HashMap<i32, i32>,
+}
+
+impl Rule {
+    fn new(rule: &str) -> Self {
+        let mut born_map: HashMap<i32, i32> = HashMap::new();
+        let mut stay_map: HashMap<i32, i32> = HashMap::new();
+        born_map.insert(2, 0);
+        born_map.insert(3, 0);
+        stay_map.insert(3, 0);
+        Rule{borns: born_map, stays: stay_map}
+    }
+}
+
 impl<'a> World<'a> {
     pub fn new(width: i32, height: i32, seeder: seeder::Seeder,
                rule: &'a str) -> Self {
@@ -49,11 +65,7 @@ impl<'a> World<'a> {
 
     pub fn next(&self) -> Self {
         let mut next_grid: Grid = Grid::new();
-        let mut born_map: HashMap<i32, i32> = HashMap::new();
-        let mut stay_map: HashMap<i32, i32> = HashMap::new();
-        born_map.insert(2, 0);
-        born_map.insert(3, 0);
-        stay_map.insert(3, 0);
+        let rule = Rule::new(self.rule);
 
         for (key, state) in &self.grid {
             let mut total_state: i32 = 0;
@@ -62,9 +74,9 @@ impl<'a> World<'a> {
                 let state = self.grid.get(&n).unwrap();
                 total_state += *state;
             }
-            if *state == 1 && (born_map.contains_key(&total_state)) {
+            if *state == 1 && (rule.borns.contains_key(&total_state)) {
                 new_state = 1;
-            } else if *state == 0 && (stay_map.contains_key(&total_state)){
+            } else if *state == 0 && (rule.stays.contains_key(&total_state)){
                 new_state = 1;
             } else {
                 new_state = 0;
