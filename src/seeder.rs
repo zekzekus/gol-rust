@@ -11,11 +11,10 @@ pub enum Seeder {
 
 impl Seeder {
     pub fn seed(&self, width: i32, height: i32) -> Grid {
-        let grid = match *self {
+        match *self {
             Seeder::Glider => grid_glider(width, height),
             Seeder::Random => grid_random(width, height),
-        };
-        grid
+        }
     }
 }
 

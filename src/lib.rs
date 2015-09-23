@@ -1,3 +1,5 @@
+#![feature(plugin)]
+#![plugin(clippy)]
 extern crate tcod;
 
 pub mod seeder;
@@ -28,7 +30,7 @@ impl World {
 
     pub fn print(&self) {
         let mut tx = 0;
-        for (key, value) in self.grid.iter() {
+        for (key, value) in &self.grid {
             if key.0 != tx {
                 tx = key.0;
                 print!("\n");
@@ -44,7 +46,7 @@ impl World {
 
     pub fn next(&self) -> Self {
         let mut next_grid: Grid = Grid::new();
-        for (key, state) in self.grid.iter() {
+        for (key, state) in &self.grid {
             let mut total_state: i32 = 0;
             let mut new_state: i32 = *state;
             for n in neighbours(*key, self.width, self.height) {
@@ -63,7 +65,7 @@ impl World {
 
     pub fn render(&self, console: &mut RootConsole) {
         console.clear();
-        for (key, value) in self.grid.iter() {
+        for (key, value) in &self.grid {
             let disp: char;
             if *value == 1 {
                 disp = 'O';
