@@ -6,8 +6,7 @@ extern crate tcod;
 use std::env;
 use std::process::exit;
 
-use tcod::{Console, RootConsole};
-use tcod::BackgroundFlag;
+use tcod::RootConsole;
 use tcod::input;
 use tcod::input::Event;
 use tcod::input::KeyCode;
@@ -15,20 +14,6 @@ use tcod::system;
 
 
 use bedelliv2::{World, Seeder};
-
-fn render(console: &mut RootConsole, world: &World) {
-    console.clear();
-    for (key, value) in &world.grid {
-        let disp: char;
-        if *value == 1 {
-            disp = 'O';
-        } else {
-            disp = ' ';
-        }
-        console.put_char(key.0, key.1, disp, BackgroundFlag::Set);
-    }
-    console.flush();
-}
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -46,7 +31,7 @@ fn main() {
     let mut world: World = World::new(width, height, Seeder::Random);
 
     system::set_fps(30);
-    render(&mut con, &world);
+    world.render(&mut con);
     while !con.window_closed() {
         if let Some(input) = user_input() {
             match input {
@@ -58,7 +43,7 @@ fn main() {
         }
 
         world = world.next();
-        render(&mut con, &world);
+        world.render(&mut con);
     }
 }
 enum Input { Exit, }

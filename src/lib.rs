@@ -1,8 +1,13 @@
+extern crate tcod;
+
 pub mod seeder;
 
 pub use seeder::Seeder;
 
 use std::collections::BTreeMap;
+
+use tcod::{Console, RootConsole};
+use tcod::BackgroundFlag;
 
 // a sorted tree map to represent whole game board
 // coordinated by tuples of integers. Dead or Alive status 
@@ -55,6 +60,21 @@ impl World {
         }
         World{width: self.width, height: self.height, grid: next_grid}
     }
+
+    pub fn render(&self, console: &mut RootConsole) {
+        console.clear();
+        for (key, value) in self.grid.iter() {
+            let disp: char;
+            if *value == 1 {
+                disp = 'O';
+            } else {
+                disp = ' ';
+            }
+            console.put_char(key.0, key.1, disp, BackgroundFlag::Set);
+        }
+        console.flush();
+    }
+
 }
 
 fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
