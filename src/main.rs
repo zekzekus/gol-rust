@@ -23,7 +23,7 @@ fn render(console: &mut RootConsole, world: &World) {
         if *value == 1 {
             disp = 'O';
         } else {
-            disp = '.';
+            disp = ' ';
         }
         console.put_char(key.0, key.1, disp, BackgroundFlag::Set);
     }
