@@ -1,6 +1,6 @@
 #![feature(plugin)]
 #![plugin(clippy)]
-extern crate bedelliv2;
+extern crate bedelli;
 extern crate tcod;
 
 use std::env;
@@ -13,7 +13,7 @@ use tcod::input::KeyCode;
 use tcod::system;
 
 
-use bedelliv2::{World, Seeder};
+use bedelli::{World, Seeder};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
