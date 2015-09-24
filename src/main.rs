@@ -14,6 +14,7 @@ use tcod::system;
 
 
 use bedelli::{World, Seeder};
+use bedelli::Rule;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -28,7 +29,8 @@ fn main() {
         .title("Conway Game of Life")
         .init();
 
-    let mut world: World = World::new(width, height, Seeder::Random, "B3S23");
+    let rule = Rule::new("B3S23");
+    let mut world: World = World::new(width, height, Seeder::CenterOne, &rule);
 
     system::set_fps(30);
     world.render(&mut con);
