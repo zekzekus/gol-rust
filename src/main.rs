@@ -18,19 +18,20 @@ use bedelli::Rule;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        panic!("at least two arguments required! width and height");
+    if args.len() < 4 {
+        panic!("at least three arguments required! width, height and rule");
     }
     let width = args[1].parse::<i32>().unwrap();
     let height = args[2].parse::<i32>().unwrap();
+    let ref rulestr = args[3];
 
     let mut con = RootConsole::initializer()
         .size(width, height)
         .title("Conway Game of Life")
         .init();
 
-    let rule = Rule::new("B3S23");
-    let mut world: World = World::new(width, height, Seeder::CenterOne, &rule);
+    let rule = Rule::new(&rulestr);
+    let mut world: World = World::new(width, height, Seeder::Random, &rule);
 
     system::set_fps(30);
     world.render(&mut con);

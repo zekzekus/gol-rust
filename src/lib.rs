@@ -33,9 +33,9 @@ impl Rule {
     pub fn new(rule: &str) -> Self {
         let mut born_map: HashMap<i32, i32> = HashMap::new();
         let mut stay_map: HashMap<i32, i32> = HashMap::new();
-        born_map.insert(1, 0);
         born_map.insert(2, 0);
-        stay_map.insert(1, 0);
+        born_map.insert(3, 0);
+        stay_map.insert(3, 0);
         Rule{borns: born_map, stays: stay_map}
     }
 }
