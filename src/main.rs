@@ -31,7 +31,7 @@ fn main() {
         .init();
 
     let rule = Rule::new(&rulestr);
-    let mut world: World = World::new(width, height, Seeder::Glider, &rule);
+    let mut world: World = World::new(width, height, Seeder::Random, &rule);
 
     system::set_fps(30);
     world.render(&mut con);
