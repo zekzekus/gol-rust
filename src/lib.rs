@@ -7,7 +7,6 @@ pub mod seeder;
 pub use seeder::Seeder;
 
 use std::collections::BTreeMap;
-use std::collections::HashMap;
 
 use tcod::{Console, RootConsole};
 use tcod::BackgroundFlag;
@@ -25,18 +24,23 @@ pub struct World<'a> {
 }
 
 pub struct Rule {
-    borns: HashMap<i32, i32>,
-    stays: HashMap<i32, i32>,
+    borns: Vec<i32>,
+    stays: Vec<i32>,
 }
 
 impl Rule {
     pub fn new(rule: &str) -> Self {
-        let mut born_map: HashMap<i32, i32> = HashMap::new();
-        let mut stay_map: HashMap<i32, i32> = HashMap::new();
-        born_map.insert(2, 0);
-        born_map.insert(3, 0);
-        stay_map.insert(3, 0);
-        Rule{borns: born_map, stays: stay_map}
+        let parts: Vec<&str> = rule.split('s').collect();
+        let born_part: Vec<&str> = parts[0].matches(char::is_numeric).collect();
+        let stay_part: Vec<&str> = parts[1].matches(char::is_numeric).collect();
+
+        let born_keys: Vec<i32> = born_part.iter().map(|&each| {
+            each.parse::<i32>().unwrap()
+        }).collect();
+        let stay_keys: Vec<i32> = stay_part.iter().map(|&each| {
+            each.parse::<i32>().unwrap()
+        }).collect();
+        Rule{borns: born_keys, stays: stay_keys}
     }
 }
 
@@ -74,9 +78,9 @@ impl<'a> World<'a> {
                 let state = self.grid.get(&n).unwrap();
                 total_state += *state;
             }
-            if *state == 1 && (self.rule.borns.contains_key(&total_state)) {
+            if *state == 1 && (self.rule.stays.contains(&total_state)) {
                 new_state = 1;
-            } else if *state == 0 && (self.rule.stays.contains_key(&total_state)){
+            } else if *state == 0 && (self.rule.borns.contains(&total_state)){
                 new_state = 1;
             } else {
                 new_state = 0;
