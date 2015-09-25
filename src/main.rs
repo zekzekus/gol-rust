@@ -18,12 +18,13 @@ use bedelli::Rule;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 4 {
-        panic!("at least three arguments required! width, height and rule");
+    if args.len() < 5 {
+        panic!("at least four arguments required! width, height, rula and initial board type");
     }
     let width = args[1].parse::<i32>().unwrap();
     let height = args[2].parse::<i32>().unwrap();
     let ref rulestr = args[3];
+    let seeder: u32 = args[4].parse::<u32>().unwrap();
 
     let mut con = RootConsole::initializer()
         .size(width, height)
@@ -31,7 +32,7 @@ fn main() {
         .init();
 
     let rule = Rule::new(&rulestr);
-    let mut world: World = World::new(width, height, Seeder::Random, &rule);
+    let mut world: World = World::new(width, height, Seeder::new(seeder), &rule);
 
     system::set_fps(30);
     world.render(&mut con);

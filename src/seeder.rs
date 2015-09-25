@@ -20,6 +20,16 @@ impl Seeder {
             Seeder::CenterFive => grid_center_five(width, height),
         }
     }
+
+    pub fn new(index: u32) -> Self {
+        match index {
+            0 => Seeder::Random,
+            1 => Seeder::Glider,
+            2 => Seeder::CenterOne,
+            3 => Seeder::CenterFive,
+            _ => panic!("invalid seeder: {}", index),
+        }
+    }
 }
 
 fn grid_glider(width: i32, height: i32) -> Grid {
