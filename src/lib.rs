@@ -14,7 +14,7 @@ use tcod::{Console, RootConsole};
 use tcod::BackgroundFlag;
 
 // a sorted tree map to represent whole game board
-// coordinated by tuples of integers. Dead or Alive status 
+// coordinated by tuples of integers. Dead or Alive status
 // 1 and 0.
 pub type Grid = BTreeMap<(i32, i32), i32>;
 
@@ -54,18 +54,11 @@ impl<'a> World<'a> {
 
         for (key, state) in &self.grid {
             let mut total_state: i32 = 0;
-            let new_state: i32;
             for n in neighbours(*key, self.width, self.height) {
                 let state = self.grid.get(&n).unwrap();
                 total_state += *state;
             }
-            if *state == 1 && (self.rule.stays.contains(&total_state)) {
-                new_state = 1;
-            } else if *state == 0 && (self.rule.borns.contains(&total_state)){
-                new_state = 1;
-            } else {
-                new_state = 0;
-            }
+            let new_state = self.rule.check(*state, total_state);
             next_grid.insert(*key, new_state);
         }
         World{width: self.width, height: self.height, grid: next_grid,
