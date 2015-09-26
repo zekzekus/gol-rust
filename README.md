@@ -1,12 +1,12 @@
 ### gol-rust
 
-my simple and silly implementation of [Game of Life] (https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+my simple and silly implementation of [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 Purpose is just playing with [rust](http://www.rust-lang.org).
 
 ## Requirements
 
-- libtcod -> in mac os x its just `brew install libtcod`
+- libtcod -> on mac os x its just `brew install libtcod`
 
 ## Build
 
