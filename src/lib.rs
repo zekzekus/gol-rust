@@ -1,5 +1,3 @@
-#![feature(plugin)]
-#![plugin(clippy)]
 extern crate tcod;
 
 pub mod seeder;

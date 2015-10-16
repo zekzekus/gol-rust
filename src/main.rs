@@ -1,5 +1,3 @@
-#![feature(plugin)]
-#![plugin(clippy)]
 extern crate bedelli;
 extern crate tcod;
 
