@@ -5,6 +5,4 @@ authors = ["Zekeriya Koc <zekzekus@gmail.com>"]
 
 [dependencies]
 rand = "*"
-
-[dependencies.tcod]
-git = "https://github.com/tomassedovic/tcod-rs"
+tcod = "0.8"

@@ -3,7 +3,7 @@ name = "bedelli"
 version = "0.1.0"
 dependencies = [
  "rand 0.3.11 (registry+https://github.com/rust-lang/crates.io-index)",
- "tcod 0.7.0 (git+https://github.com/tomassedovic/tcod-rs)",
+ "tcod 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -19,15 +19,6 @@ dependencies = [
 name = "bitflags"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "kernel32-sys"
-version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "winapi 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "winapi-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "lazy_static"
@@ -51,32 +42,21 @@ dependencies = [
 
 [[package]]
 name = "tcod"
-version = "0.7.0"
-source = "git+https://github.com/tomassedovic/tcod-rs#8e6de5bb5700b940ab1128c32eacb5fd7cdf2ba9"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "bitflags 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 0.1.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "tcod-sys 2.0.12 (git+https://github.com/tomassedovic/tcod-rs)",
- "time 0.1.32 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tcod-sys 3.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "tcod-sys"
-version = "2.0.12"
-source = "git+https://github.com/tomassedovic/tcod-rs#8e6de5bb5700b940ab1128c32eacb5fd7cdf2ba9"
-dependencies = [
- "libc 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "time"
-version = "0.1.32"
+version = "3.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "kernel32-sys 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "winapi 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
