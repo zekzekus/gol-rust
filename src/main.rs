@@ -4,15 +4,14 @@ extern crate tcod;
 use std::env;
 use std::process::exit;
 
-use tcod::RootConsole;
 use tcod::input;
 use tcod::input::Event;
 use tcod::input::KeyCode;
 use tcod::system;
+use tcod::RootConsole;
 
-
-use bedelli::{World, Seeder};
 use bedelli::Rule;
+use bedelli::{Seeder, World};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -40,7 +39,7 @@ fn main() {
                 Input::Exit => {
                     println!("User exit");
                     exit(0);
-                },
+                }
             }
         }
 
@@ -48,17 +47,17 @@ fn main() {
         world.render(&mut con);
     }
 }
-enum Input { Exit, }
+enum Input {
+    Exit,
+}
 
 fn user_input() -> Option<Input> {
     let flags = input::KEY;
     match input::check_for_event(flags).map(|(_, e)| e) {
-        Some(Event::Key(s)) => {
-            match s.code {
-                KeyCode::Escape => Some(Input::Exit),
-                _ => None
-            }
+        Some(Event::Key(s)) => match s.code {
+            KeyCode::Escape => Some(Input::Exit),
+            _ => None,
         },
-        _ => None
+        _ => None,
     }
 }

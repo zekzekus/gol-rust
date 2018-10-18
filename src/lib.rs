@@ -1,15 +1,15 @@
 extern crate tcod;
 
-pub mod seeder;
 pub mod rules;
+pub mod seeder;
 
-pub use seeder::Seeder;
 pub use rules::Rule;
+pub use seeder::Seeder;
 
 use std::collections::BTreeMap;
 
-use tcod::{Console, RootConsole};
 use tcod::BackgroundFlag;
+use tcod::{Console, RootConsole};
 
 // a sorted tree map to represent whole game board
 // coordinated by tuples of integers. Dead or Alive status
@@ -24,11 +24,14 @@ pub struct World<'a> {
 }
 
 impl<'a> World<'a> {
-    pub fn new(width: i32, height: i32, seeder: seeder::Seeder,
-               rule: &'a Rule) -> Self {
+    pub fn new(width: i32, height: i32, seeder: seeder::Seeder, rule: &'a Rule) -> Self {
         let grid = seeder.seed(width, height);
-        World{width: width, height: height, grid: grid,
-              rule: &rule}
+        World {
+            width: width,
+            height: height,
+            grid: grid,
+            rule: &rule,
+        }
     }
 
     pub fn print(&self) {
@@ -59,8 +62,12 @@ impl<'a> World<'a> {
             let new_state = self.rule.check(*state, total_state);
             next_grid.insert(*key, new_state);
         }
-        World{width: self.width, height: self.height, grid: next_grid,
-              rule: self.rule}
+        World {
+            width: self.width,
+            height: self.height,
+            grid: next_grid,
+            rule: self.rule,
+        }
     }
 
     pub fn render(&self, console: &mut RootConsole) {
@@ -76,7 +83,6 @@ impl<'a> World<'a> {
         }
         console.flush();
     }
-
 }
 
 fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
@@ -95,4 +101,3 @@ fn neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i
     }
     points
 }
-
