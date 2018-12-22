@@ -3,8 +3,8 @@ extern crate tcod;
 pub mod rules;
 pub mod seeder;
 
-pub use rules::Rule;
-pub use seeder::Seeder;
+pub use crate::rules::Rule;
+pub use crate::seeder::Seeder;
 
 use std::collections::BTreeMap;
 
