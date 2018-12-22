@@ -5,4 +5,4 @@ authors = ["Zekeriya Koc <zekzekus@gmail.com>"]
 
 [dependencies]
 rand = "*"
-tcod = "0.11"
+tcod = "0.13"
