@@ -22,13 +22,13 @@ pub struct World<'a> {
 }
 
 impl<'a> World<'a> {
-    pub fn new(width: i32, height: i32, seeder: seeder::Seeder, rule: &'a Rule) -> Self {
+    pub fn new(width: i32, height: i32, seeder: &seeder::Seeder, rule: &'a Rule) -> Self {
         let grid = seeder.seed(width, height);
         World {
-            width: width,
-            height: height,
-            grid: grid,
-            rule: &rule,
+            width,
+            height,
+            grid,
+            rule,
         }
     }
 
@@ -37,7 +37,7 @@ impl<'a> World<'a> {
         for (key, value) in &self.grid {
             if key.0 != tx {
                 tx = key.0;
-                print!("\n");
+                println!();
             }
             if *value == 1 {
                 print!("O");
@@ -45,7 +45,7 @@ impl<'a> World<'a> {
                 print!("-");
             }
         }
-        print!("\n");
+        println!();
     }
 
     pub fn next(&self) -> Self {
@@ -54,8 +54,8 @@ impl<'a> World<'a> {
         for (key, state) in &self.grid {
             let mut total_state: i32 = 0;
             for n in neighbours(*key, self.width, self.height) {
-                let state = self.grid.get(&n).unwrap();
-                total_state += *state;
+                let state = self.grid[&n];
+                total_state += state;
             }
             let new_state = self.rule.check(*state, total_state);
             next_grid.insert(*key, new_state);
@@ -71,12 +71,7 @@ impl<'a> World<'a> {
     pub fn render(&self, console: &mut RootConsole) {
         console.clear();
         for (key, value) in &self.grid {
-            let disp: char;
-            if *value == 1 {
-                disp = 'O';
-            } else {
-                disp = ' ';
-            }
+            let disp = if *value == 1 { 'O' } else { ' ' };
             console.put_char(key.0, key.1, disp, BackgroundFlag::Set);
         }
         console.flush();

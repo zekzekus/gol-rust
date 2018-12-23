@@ -36,11 +36,7 @@ fn grid_glider(width: i32, height: i32) -> Grid {
     let mut grid = Grid::new();
     for x in 0..width {
         for y in 0..height {
-            if x == 1 && y == 2 {
-                grid.insert((x, y), 1);
-            } else if x == 2 && y == 3 {
-                grid.insert((x, y), 1);
-            } else if x == 3 && (y == 1 || y == 2 || y == 3) {
+            if (x == 1 && y == 2) || (x == 2 && y == 3) || (x == 3 && (y == 1 || y == 2 || y == 3)) {
                 grid.insert((x, y), 1);
             } else {
                 grid.insert((x, y), 0);
