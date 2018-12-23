@@ -13,12 +13,12 @@ use bedelli::{Seeder, World};
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 5 {
-        panic!("at least four arguments required! width, height, rula and initial board type");
+        panic!("at least four arguments required! width, height, rule and initial board type");
     }
     let width = args[1].parse::<i32>().unwrap();
     let height = args[2].parse::<i32>().unwrap();
     let rulestr = &args[3];
-    let seeder: u32 = args[4].parse::<u32>().unwrap();
+    let seeder = args[4].parse::<u32>().unwrap();
 
     let mut con = RootConsole::initializer()
         .size(width, height)
