@@ -1,5 +1,5 @@
-extern crate bedelli;
-extern crate tcod;
+
+
 
 use std::env;
 use std::process::exit;
@@ -29,7 +29,7 @@ fn main() {
         .init();
 
     let rule = Rule::new(&rulestr);
-    let mut world: World = World::new(width, height, Seeder::new(seeder), &rule);
+    let mut world: World<'_> = World::new(width, height, Seeder::new(seeder), &rule);
 
     system::set_fps(30);
     world.render(&mut con);
