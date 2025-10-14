@@ -101,6 +101,15 @@ pub fn mouse_toggle(world: &mut SubWorld, #[resource] input: &InputState, #[reso
     }
 }
 
+#[system]
+#[read_component(NextCell)]
+pub fn cleanup_next(world: &mut SubWorld, cmd: &mut CommandBuffer) {
+    let mut query = <(Entity, &NextCell)>::query();
+    for (entity, _) in query.iter(world) {
+        cmd.remove_component::<NextCell>(*entity);
+    }
+}
+
 
 
 pub fn render_system(world: &World, ctx: &mut BTerm) {

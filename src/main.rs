@@ -43,6 +43,7 @@ impl GameState {
             .add_system(mouse_toggle_system())
             .add_system(neighbor_counting_system())
             .add_system(state_update_system())
+            .add_system(cleanup_next_system())
             .add_system(age_update_system())
             .add_system(color_update_system())
             .build();
