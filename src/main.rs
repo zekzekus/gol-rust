@@ -11,6 +11,7 @@ use bedelli::Seeder;
 struct GameState {
     ecs: World,
     resources: Resources,
+    schedule: Schedule,
 }
 
 impl GameState {
@@ -27,7 +28,16 @@ impl GameState {
         resources.insert(Dimensions { width, height });
         resources.insert(rule);
 
-        GameState { ecs, resources }
+        let schedule = Schedule::builder()
+            .add_system(neighbor_counting_system())
+            .add_system(state_update_system())
+            .build();
+
+        GameState {
+            ecs,
+            resources,
+            schedule,
+        }
     }
 }
 
@@ -40,7 +50,7 @@ impl bracket_lib::prelude::GameState for GameState {
             _ => {}
         }
 
-        calculate_next_generation(&mut self.ecs, &mut self.resources);
+        self.schedule.execute(&mut self.ecs, &mut self.resources);
         render_system(&self.ecs, ctx);
     }
 }
