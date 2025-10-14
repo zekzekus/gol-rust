@@ -3,6 +3,7 @@ use legion::*;
 use std::collections::HashMap;
 
 use crate::components::*;
+use crate::resources::*;
 
 pub fn calculate_next_generation(world: &mut World, resources: &mut Resources) {
     let dimensions = resources.get::<Dimensions>().unwrap();
@@ -11,29 +12,31 @@ pub fn calculate_next_generation(world: &mut World, resources: &mut Resources) {
     let height = dimensions.height;
 
     let mut states = HashMap::new();
-    
     let mut query = <(&Position, &Cell)>::query();
     for (pos, cell) in query.iter(world) {
         states.insert((pos.x, pos.y), cell.alive);
     }
 
-    let mut next_states = HashMap::new();
-    for ((x, y), alive) in &states {
-        let neighbours = get_neighbours((*x, *y), width, height);
+    let mut next_cells = Vec::new();
+    let mut query = <(Entity, &Position, &Cell)>::query();
+    for (entity, pos, cell) in query.iter(world) {
+        let neighbours = get_neighbours((pos.x, pos.y), width, height);
         let alive_neighbours = neighbours
             .iter()
             .filter(|&&pos| states.get(&pos).copied().unwrap_or(false))
             .count() as i32;
         
-        let new_state = rule.check(*alive, alive_neighbours);
-        next_states.insert((*x, *y), new_state);
+        let new_state = rule.check(cell.alive, alive_neighbours);
+        next_cells.push((*entity, NextCell { alive: new_state }));
     }
 
-    let mut query = <(&Position, &mut Cell)>::query();
-    for (pos, cell) in query.iter_mut(world) {
-        if let Some(&new_state) = next_states.get(&(pos.x, pos.y)) {
-            cell.alive = new_state;
-        }
+    for (entity, next_cell) in next_cells {
+        world.entry(entity).unwrap().add_component(next_cell);
+    }
+
+    let mut query = <(&NextCell, &mut Cell)>::query();
+    for (next_cell, cell) in query.iter_mut(world) {
+        cell.alive = next_cell.alive;
     }
 }
 

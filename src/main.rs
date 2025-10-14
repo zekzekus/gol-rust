@@ -4,6 +4,7 @@ use bracket_lib::prelude::*;
 use legion::*;
 
 use bedelli::components::*;
+use bedelli::resources::*;
 use bedelli::systems::*;
 use bedelli::Seeder;
 
