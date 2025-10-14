@@ -1,3 +1,7 @@
+pub trait CellularRule: Send + Sync {
+    fn check(&self, curr_state: bool, neighbours_alive: i32) -> bool;
+}
+
 #[derive(Clone, Debug)]
 pub struct Rule {
     pub borns: Vec<i32>,
@@ -23,8 +27,10 @@ impl Rule {
             stays: stay_keys,
         }
     }
+}
 
-    pub fn check(&self, curr_state: bool, neighbours_alive: i32) -> bool {
+impl CellularRule for Rule {
+    fn check(&self, curr_state: bool, neighbours_alive: i32) -> bool {
         match curr_state {
             true if self.stays.contains(&neighbours_alive) => true,
             false if self.borns.contains(&neighbours_alive) => true,

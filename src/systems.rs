@@ -47,8 +47,21 @@ pub fn state_update(world: &mut SubWorld) {
 
 pub fn render_system(world: &World, ctx: &mut BTerm) {
     ctx.cls();
-    let mut query = <(&Position, &Cell)>::query();
-    for (pos, cell) in query.iter(world) {
+    
+    let mut query_with_color = <(&Position, &Cell, &CellColor)>::query();
+    for (pos, cell, color) in query_with_color.iter(world) {
+        let disp = if cell.alive { 'O' } else { ' ' };
+        ctx.set(
+            pos.x,
+            pos.y,
+            RGB::from_u8(color.r, color.g, color.b),
+            RGB::named(BLACK),
+            to_cp437(disp),
+        );
+    }
+    
+    let mut query_without_color = <(&Position, &Cell)>::query().filter(!component::<CellColor>());
+    for (pos, cell) in query_without_color.iter(world) {
         let disp = if cell.alive { 'O' } else { ' ' };
         ctx.set(
             pos.x,

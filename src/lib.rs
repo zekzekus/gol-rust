@@ -1,3 +1,4 @@
+pub mod alternative_rules;
 pub mod components;
 pub mod resources;
 pub mod seeder;
