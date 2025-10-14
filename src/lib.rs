@@ -6,23 +6,19 @@ pub use crate::seeder::Seeder;
 
 use std::collections::BTreeMap;
 
-use tcod::BackgroundFlag;
-use tcod::{Console, RootConsole};
+use bracket_lib::prelude::*;
 
-// a sorted tree map to represent whole game board
-// coordinated by tuples of integers. Dead or Alive status
-// 1 and 0.
 pub type Grid = BTreeMap<(i32, i32), i32>;
 
-pub struct World<'a> {
+pub struct World {
     width: i32,
     height: i32,
     pub grid: Grid,
-    rule: &'a Rule,
+    rule: Rule,
 }
 
-impl<'a> World<'a> {
-    pub fn new(width: i32, height: i32, seeder: &seeder::Seeder, rule: &'a Rule) -> Self {
+impl World {
+    pub fn new(width: i32, height: i32, seeder: &seeder::Seeder, rule: Rule) -> Self {
         let grid = seeder.seed(width, height);
         World {
             width,
@@ -64,17 +60,19 @@ impl<'a> World<'a> {
             width: self.width,
             height: self.height,
             grid: next_grid,
-            rule: self.rule,
+            rule: Rule {
+                borns: self.rule.borns.clone(),
+                stays: self.rule.stays.clone(),
+            },
         }
     }
 
-    pub fn render(&self, console: &mut RootConsole) {
-        console.clear();
+    pub fn render(&self, ctx: &mut BTerm) {
+        ctx.cls();
         for (key, value) in &self.grid {
             let disp = if *value == 1 { 'O' } else { ' ' };
-            console.put_char(key.0, key.1, disp, BackgroundFlag::Set);
+            ctx.set(key.0, key.1, RGB::named(WHITE), RGB::named(BLACK), to_cp437(disp));
         }
-        console.flush();
     }
 }
 

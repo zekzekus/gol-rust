@@ -6,4 +6,4 @@ edition = "2018"
 
 [dependencies]
 rand = "*"
-tcod = "0.13"
+bracket-lib = "~0.8"

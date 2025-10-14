@@ -61,6 +61,16 @@
               cargo-edit
               cargo-watch
               rust-analyzer
+              # Required for bracket-lib
+              xorg.libX11
+              xorg.libXcursor
+              xorg.libXi
+              xorg.libXrandr
+              libGL
+              cmake
+              freetype
+              expat
+              fontconfig
             ];
 
             env = {

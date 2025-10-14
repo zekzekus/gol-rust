@@ -1,16 +1,36 @@
 use std::env;
-use std::process::exit;
 
-use tcod::input;
-use tcod::input::Event;
-use tcod::input::KeyCode;
-use tcod::system;
-use tcod::RootConsole;
+use bracket_lib::prelude::*;
 
 use bedelli::Rule;
 use bedelli::{Seeder, World};
 
-fn main() {
+struct GameState {
+    world: World,
+}
+
+impl GameState {
+    fn new(width: i32, height: i32, seeder: &Seeder, rule: Rule) -> Self {
+        let world = World::new(width, height, seeder, rule);
+        GameState { world }
+    }
+}
+
+impl bracket_lib::prelude::GameState for GameState {
+    fn tick(&mut self, ctx: &mut BTerm) {
+        match ctx.key {
+            Some(VirtualKeyCode::Escape) => {
+                ctx.quit();
+            }
+            _ => {}
+        }
+
+        self.world = self.world.next();
+        self.world.render(ctx);
+    }
+}
+
+fn main() -> BError {
     let args: Vec<String> = env::args().collect();
     if args.len() < 5 {
         panic!("at least four arguments required! width, height, rule and initial board type");
@@ -18,43 +38,17 @@ fn main() {
     let width = args[1].parse::<i32>().unwrap();
     let height = args[2].parse::<i32>().unwrap();
     let rulestr = &args[3];
-    let seeder = args[4].parse::<u32>().unwrap();
-
-    let mut con = RootConsole::initializer()
-        .size(width, height)
-        .title("Conway Game of Life")
-        .init();
+    let seeder_type = args[4].parse::<u32>().unwrap();
 
     let rule = Rule::new(&rulestr);
-    let mut world: World<'_> = World::new(width, height, &Seeder::new(seeder), &rule);
+    let seeder = Seeder::new(seeder_type);
+    let game_state = GameState::new(width, height, &seeder, rule);
 
-    system::set_fps(30);
-    world.render(&mut con);
-    while !con.window_closed() {
-        if let Some(input) = user_input() {
-            match input {
-                Input::Exit => {
-                    println!("User exit");
-                    exit(0);
-                }
-            }
-        }
+    let context = BTermBuilder::simple(width, height)
+        .unwrap()
+        .with_title("Conway Game of Life")
+        .with_fps_cap(30.0)
+        .build()?;
 
-        world = world.next();
-        world.render(&mut con);
-    }
-}
-enum Input {
-    Exit,
-}
-
-fn user_input() -> Option<Input> {
-    let flags = input::KEY;
-    match input::check_for_event(flags).map(|(_, e)| e) {
-        Some(Event::Key(s)) => match s.code {
-            KeyCode::Escape => Some(Input::Exit),
-            _ => None,
-        },
-        _ => None,
-    }
+    main_loop(context, game_state)
 }

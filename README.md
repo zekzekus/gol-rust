@@ -6,7 +6,8 @@ Purpose is just playing with [rust](http://www.rust-lang.org).
 
 ## Requirements
 
-- libtcod -> on mac os x its just `brew install libtcod`
+- Nix with flakes enabled (for development environment)
+- X11 display server (Wayland has known issues with bracket-lib)
 
 ## Build
 
@@ -15,10 +16,12 @@ Purpose is just playing with [rust](http://www.rust-lang.org).
 ## Run
 
 - usage: bedelli width height rule seeder
-- rule -> like b2s23. this is standard Conway's rule.
+- rule -> like b3s23. this is standard Conway's rule.
 - seeder -> 0: random, 1: a glider, 2: One alive at the center, 3: five alive
   cells in the middle.
-- ./target/release/bedelli 100 100 b2s23 0
+- `WINIT_UNIX_BACKEND=x11 ./target/release/bedelli 80 50 b3s23 1`
+
+**Note:** If running on Wayland, you must set `WINIT_UNIX_BACKEND=x11` to force X11 mode.
 
 ## TODO 
 
