@@ -2,10 +2,16 @@ use bracket_lib::prelude::*;
 use legion::systems::CommandBuffer;
 use legion::world::SubWorld;
 use legion::*;
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 use crate::components::*;
 use crate::resources::*;
+
+const OFFSETS: [(i32, i32); 8] = [
+    (-1, -1), (-1, 0), (-1, 1),
+    (0, -1),           (0, 1),
+    (1, -1),  (1, 0),  (1, 1),
+];
 
 #[system]
 #[read_component(Position)]
@@ -14,19 +20,27 @@ pub fn neighbor_counting(world: &mut SubWorld, cmd: &mut CommandBuffer, #[resour
     let width = dimensions.width;
     let height = dimensions.height;
 
-    let mut states = HashMap::new();
-    let mut query = <(&Position, &Cell)>::query();
-    for (pos, cell) in query.iter(world) {
-        states.insert((pos.x, pos.y), cell.alive);
-    }
+    let alive: HashSet<(i32, i32)> = <(&Position, &Cell)>::query()
+        .iter(world)
+        .filter_map(|(pos, cell)| {
+            if cell.alive {
+                Some((pos.x, pos.y))
+            } else {
+                None
+            }
+        })
+        .collect();
 
     let mut query = <(Entity, &Position, &Cell)>::query();
     for (entity, pos, cell) in query.iter(world) {
-        let neighbours = get_neighbours((pos.x, pos.y), width, height);
-        let alive_neighbours = neighbours
-            .iter()
-            .filter(|&&pos| states.get(&pos).copied().unwrap_or(false))
-            .count() as i32;
+        let mut alive_neighbours = 0;
+        for (dx, dy) in OFFSETS {
+            let nx = pos.x + dx;
+            let ny = pos.y + dy;
+            if nx >= 0 && nx < width && ny >= 0 && ny < height && alive.contains(&(nx, ny)) {
+                alive_neighbours += 1;
+            }
+        }
         
         let new_state = rule(cell.alive, alive_neighbours);
         cmd.add_component(*entity, NextCell { alive: new_state });
@@ -73,19 +87,4 @@ pub fn render_system(world: &World, ctx: &mut BTerm) {
     }
 }
 
-fn get_neighbours(point: (i32, i32), max_width: i32, max_height: i32) -> Vec<(i32, i32)> {
-    let mut points = Vec::new();
-    let range = [-1, 0, 1];
-    for row in &range {
-        for col in &range {
-            if !(*row == *col && *row == 0) {
-                let nx = *row + point.0;
-                let ny = *col + point.1;
-                if nx >= 0 && nx < max_width && ny >= 0 && ny < max_height {
-                    points.push((nx, ny));
-                }
-            }
-        }
-    }
-    points
-}
+
