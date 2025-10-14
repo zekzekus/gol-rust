@@ -1,18 +1,32 @@
 use std::env;
 
 use bracket_lib::prelude::*;
+use legion::*;
 
-use bedelli::Rule;
-use bedelli::{Seeder, World};
+use bedelli::components::*;
+use bedelli::systems::*;
+use bedelli::Seeder;
 
 struct GameState {
-    world: World,
+    ecs: World,
+    resources: Resources,
 }
 
 impl GameState {
     fn new(width: i32, height: i32, seeder: &Seeder, rule: Rule) -> Self {
-        let world = World::new(width, height, seeder, rule);
-        GameState { world }
+        let mut ecs = World::default();
+        let mut resources = Resources::default();
+
+        let grid = seeder.seed(width, height);
+
+        for ((x, y), state) in grid {
+            ecs.push((Position { x, y }, Cell { alive: state == 1 }));
+        }
+
+        resources.insert(Dimensions { width, height });
+        resources.insert(rule);
+
+        GameState { ecs, resources }
     }
 }
 
@@ -25,8 +39,8 @@ impl bracket_lib::prelude::GameState for GameState {
             _ => {}
         }
 
-        self.world = self.world.next();
-        self.world.render(ctx);
+        calculate_next_generation(&mut self.ecs, &mut self.resources);
+        render_system(&self.ecs, ctx);
     }
 }
 

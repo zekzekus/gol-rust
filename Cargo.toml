@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 rand = "*"
 bracket-lib = "~0.8"
+legion = "0.4"

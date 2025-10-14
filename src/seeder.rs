@@ -1,8 +1,7 @@
-use rand;
+use rand::{thread_rng, Rng};
+use std::collections::BTreeMap;
 
-use super::Grid;
-
-use self::rand::{thread_rng, Rng};
+pub type Grid = BTreeMap<(i32, i32), i32>;
 
 pub enum Seeder {
     Random,
@@ -51,7 +50,7 @@ fn grid_random(width: i32, height: i32) -> Grid {
     let mut rng = thread_rng();
     for row in 0..width {
         for col in 0..height {
-            grid.insert((row, col), rng.gen_range(0, 2));
+            grid.insert((row, col), rng.gen_range(0..2));
         }
     }
     grid
