@@ -57,30 +57,46 @@ pub fn state_update(world: &mut SubWorld) {
     }
 }
 
+#[system]
+#[read_component(Cell)]
+#[write_component(Age)]
+pub fn age_update(world: &mut SubWorld) {
+    let mut query = <(&Cell, &mut Age)>::query();
+    for (cell, age) in query.iter_mut(world) {
+        if cell.alive {
+            age.value = age.value.saturating_add(1);
+        } else {
+            age.value = 0;
+        }
+    }
+}
+
+#[system]
+#[read_component(Age)]
+#[write_component(CellColor)]
+pub fn color_update(world: &mut SubWorld) {
+    let mut query = <(&Age, &mut CellColor)>::query();
+    for (age, color) in query.iter_mut(world) {
+        let age_capped = age.value.min(60);
+        let intensity = 255 - (age_capped as f32 * 2.5) as u8;
+        color.r = intensity;
+        color.g = intensity.saturating_add(50);
+        color.b = 255;
+    }
+}
+
 
 
 pub fn render_system(world: &World, ctx: &mut BTerm) {
     ctx.cls();
     
-    let mut query_with_color = <(&Position, &Cell, &CellColor)>::query();
-    for (pos, cell, color) in query_with_color.iter(world) {
+    let mut query = <(&Position, &Cell, &CellColor)>::query();
+    for (pos, cell, color) in query.iter(world) {
         let disp = if cell.alive { 'O' } else { ' ' };
         ctx.set(
             pos.x,
             pos.y,
             RGB::from_u8(color.r, color.g, color.b),
-            RGB::named(BLACK),
-            to_cp437(disp),
-        );
-    }
-    
-    let mut query_without_color = <(&Position, &Cell)>::query().filter(!component::<CellColor>());
-    for (pos, cell) in query_without_color.iter(world) {
-        let disp = if cell.alive { 'O' } else { ' ' };
-        ctx.set(
-            pos.x,
-            pos.y,
-            RGB::named(WHITE),
             RGB::named(BLACK),
             to_cp437(disp),
         );

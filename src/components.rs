@@ -15,6 +15,17 @@ pub struct NextCell {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Age {
+    pub value: u32,
+}
+
+impl Default for Age {
+    fn default() -> Self {
+        Age { value: 0 }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct CellColor {
     pub r: u8,
     pub g: u8,

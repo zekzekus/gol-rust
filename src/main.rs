@@ -24,7 +24,12 @@ impl GameState {
         let grid = seeder.seed(width, height);
 
         for ((x, y), state) in grid {
-            ecs.push((Position { x, y }, Cell { alive: state == 1 }));
+            ecs.push((
+                Position { x, y },
+                Cell { alive: state == 1 },
+                Age::default(),
+                CellColor::default(),
+            ));
         }
 
         resources.insert(Dimensions { width, height });
@@ -33,6 +38,8 @@ impl GameState {
         let schedule = Schedule::builder()
             .add_system(neighbor_counting_system())
             .add_system(state_update_system())
+            .add_system(age_update_system())
+            .add_system(color_update_system())
             .build();
 
         GameState {
