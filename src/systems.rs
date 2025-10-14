@@ -85,6 +85,22 @@ pub fn color_update(world: &mut SubWorld) {
     }
 }
 
+#[system]
+#[write_component(Cell)]
+pub fn mouse_toggle(world: &mut SubWorld, #[resource] input: &InputState, #[resource] index: &PositionIndex) {
+    if !input.mouse_left {
+        return;
+    }
+    
+    if let Some(&entity) = index.0.get(&input.mouse_pos) {
+        if let Ok(mut entry) = world.entry_mut(entity) {
+            if let Ok(cell) = entry.get_component_mut::<Cell>() {
+                cell.alive = !cell.alive;
+            }
+        }
+    }
+}
+
 
 
 pub fn render_system(world: &World, ctx: &mut BTerm) {

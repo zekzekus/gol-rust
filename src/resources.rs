@@ -57,3 +57,22 @@ pub struct Dimensions {
     pub width: i32,
     pub height: i32,
 }
+
+use std::collections::HashMap;
+use legion::Entity;
+
+pub struct InputState {
+    pub mouse_pos: (i32, i32),
+    pub mouse_left: bool,
+}
+
+impl Default for InputState {
+    fn default() -> Self {
+        InputState {
+            mouse_pos: (0, 0),
+            mouse_left: false,
+        }
+    }
+}
+
+pub struct PositionIndex(pub HashMap<(i32, i32), Entity>);
