@@ -1,41 +1,55 @@
-pub trait CellularRule: Send + Sync {
-    fn check(&self, curr_state: bool, neighbours_alive: i32) -> bool;
+pub type RuleFn = fn(bool, i32) -> bool;
+
+pub fn parse_rule(rule_str: &str) -> RuleFn {
+    let parts: Vec<&str> = rule_str.split('s').collect();
+    let born_part: Vec<&str> = parts[0].matches(char::is_numeric).collect();
+    let stay_part: Vec<&str> = parts[1].matches(char::is_numeric).collect();
+
+    let born_keys: Vec<i32> = born_part
+        .iter()
+        .map(|&each| each.parse::<i32>().unwrap())
+        .collect();
+    let stay_keys: Vec<i32> = stay_part
+        .iter()
+        .map(|&each| each.parse::<i32>().unwrap())
+        .collect();
+    
+    make_rule(born_keys, stay_keys)
 }
 
-#[derive(Clone, Debug)]
-pub struct Rule {
-    pub borns: Vec<i32>,
-    pub stays: Vec<i32>,
-}
-
-impl Rule {
-    pub fn new(rule: &str) -> Self {
-        let parts: Vec<&str> = rule.split('s').collect();
-        let born_part: Vec<&str> = parts[0].matches(char::is_numeric).collect();
-        let stay_part: Vec<&str> = parts[1].matches(char::is_numeric).collect();
-
-        let born_keys: Vec<i32> = born_part
-            .iter()
-            .map(|&each| each.parse::<i32>().unwrap())
-            .collect();
-        let stay_keys: Vec<i32> = stay_part
-            .iter()
-            .map(|&each| each.parse::<i32>().unwrap())
-            .collect();
-        Rule {
-            borns: born_keys,
-            stays: stay_keys,
-        }
+fn make_rule(borns: Vec<i32>, stays: Vec<i32>) -> RuleFn {
+    if borns == vec![3] && stays == vec![2, 3] {
+        conway_rule
+    } else if borns == vec![3, 6] && stays == vec![2, 3] {
+        highlife_rule
+    } else if borns == vec![3, 6, 7, 8] && stays == vec![3, 4, 6, 7, 8] {
+        day_and_night_rule
+    } else {
+        conway_rule
     }
 }
 
-impl CellularRule for Rule {
-    fn check(&self, curr_state: bool, neighbours_alive: i32) -> bool {
-        match curr_state {
-            true if self.stays.contains(&neighbours_alive) => true,
-            false if self.borns.contains(&neighbours_alive) => true,
-            _ => false,
-        }
+pub fn conway_rule(curr_state: bool, neighbours_alive: i32) -> bool {
+    match curr_state {
+        true if [2, 3].contains(&neighbours_alive) => true,
+        false if neighbours_alive == 3 => true,
+        _ => false,
+    }
+}
+
+pub fn highlife_rule(curr_state: bool, neighbours_alive: i32) -> bool {
+    match curr_state {
+        true if [2, 3].contains(&neighbours_alive) => true,
+        false if [3, 6].contains(&neighbours_alive) => true,
+        _ => false,
+    }
+}
+
+pub fn day_and_night_rule(curr_state: bool, neighbours_alive: i32) -> bool {
+    match curr_state {
+        true if [3, 4, 6, 7, 8].contains(&neighbours_alive) => true,
+        false if [3, 6, 7, 8].contains(&neighbours_alive) => true,
+        _ => false,
     }
 }
 

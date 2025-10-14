@@ -10,7 +10,7 @@ use crate::resources::*;
 #[system]
 #[read_component(Position)]
 #[read_component(Cell)]
-pub fn neighbor_counting(world: &mut SubWorld, cmd: &mut CommandBuffer, #[resource] dimensions: &Dimensions, #[resource] rule: &Rule) {
+pub fn neighbor_counting(world: &mut SubWorld, cmd: &mut CommandBuffer, #[resource] dimensions: &Dimensions, #[resource] rule: &RuleFn) {
     let width = dimensions.width;
     let height = dimensions.height;
 
@@ -28,7 +28,7 @@ pub fn neighbor_counting(world: &mut SubWorld, cmd: &mut CommandBuffer, #[resour
             .filter(|&&pos| states.get(&pos).copied().unwrap_or(false))
             .count() as i32;
         
-        let new_state = rule.check(cell.alive, alive_neighbours);
+        let new_state = rule(cell.alive, alive_neighbours);
         cmd.add_component(*entity, NextCell { alive: new_state });
     }
 }

@@ -8,6 +8,8 @@ use bedelli::resources::*;
 use bedelli::systems::*;
 use bedelli::Seeder;
 
+use bedelli::resources::{parse_rule, RuleFn};
+
 struct GameState {
     ecs: World,
     resources: Resources,
@@ -15,7 +17,7 @@ struct GameState {
 }
 
 impl GameState {
-    fn new(width: i32, height: i32, seeder: &Seeder, rule: Rule) -> Self {
+    fn new(width: i32, height: i32, seeder: &Seeder, rule: RuleFn) -> Self {
         let mut ecs = World::default();
         let mut resources = Resources::default();
 
@@ -65,7 +67,7 @@ fn main() -> BError {
     let rulestr = &args[3];
     let seeder_type = args[4].parse::<u32>().unwrap();
 
-    let rule = Rule::new(&rulestr);
+    let rule = parse_rule(&rulestr);
     let seeder = Seeder::new(seeder_type);
     let game_state = GameState::new(width, height, &seeder, rule);
 
