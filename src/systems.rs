@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::components::*;
 use crate::resources::*;
 
-pub fn calculate_next_generation(world: &mut World, resources: &mut Resources) {
+pub fn neighbor_counting_system(world: &mut World, resources: &mut Resources) {
     let dimensions = resources.get::<Dimensions>().unwrap();
     let rule = resources.get::<Rule>().unwrap();
     let width = dimensions.width;
@@ -33,11 +33,18 @@ pub fn calculate_next_generation(world: &mut World, resources: &mut Resources) {
     for (entity, next_cell) in next_cells {
         world.entry(entity).unwrap().add_component(next_cell);
     }
+}
 
+pub fn state_update_system(world: &mut World) {
     let mut query = <(&NextCell, &mut Cell)>::query();
     for (next_cell, cell) in query.iter_mut(world) {
         cell.alive = next_cell.alive;
     }
+}
+
+pub fn calculate_next_generation(world: &mut World, resources: &mut Resources) {
+    neighbor_counting_system(world, resources);
+    state_update_system(world);
 }
 
 pub fn render_system(world: &World, ctx: &mut BTerm) {
