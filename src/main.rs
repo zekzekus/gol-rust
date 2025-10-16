@@ -79,6 +79,10 @@ impl bracket_lib::prelude::GameState for GameState {
 }
 
 fn main() -> BError {
+    // Force X11 backend on Linux to avoid Wayland compositor performance issues
+    #[cfg(target_os = "linux")]
+    env::remove_var("WAYLAND_DISPLAY");
+    
     let args: Vec<String> = env::args().collect();
     if args.len() < 5 {
         panic!("at least four arguments required! width, height, rule and initial board type");
