@@ -76,3 +76,132 @@ impl Default for InputState {
 }
 
 pub struct PositionIndex(pub HashMap<(i32, i32), Entity>);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_conway_rule_live_cell_survives_with_2_neighbors() {
+        assert_eq!(conway_rule(true, 2), true);
+    }
+
+    #[test]
+    fn test_conway_rule_live_cell_survives_with_3_neighbors() {
+        assert_eq!(conway_rule(true, 3), true);
+    }
+
+    #[test]
+    fn test_conway_rule_live_cell_dies_with_fewer_than_2_neighbors() {
+        assert_eq!(conway_rule(true, 0), false);
+        assert_eq!(conway_rule(true, 1), false);
+    }
+
+    #[test]
+    fn test_conway_rule_live_cell_dies_with_more_than_3_neighbors() {
+        assert_eq!(conway_rule(true, 4), false);
+        assert_eq!(conway_rule(true, 5), false);
+        assert_eq!(conway_rule(true, 8), false);
+    }
+
+    #[test]
+    fn test_conway_rule_dead_cell_becomes_alive_with_3_neighbors() {
+        assert_eq!(conway_rule(false, 3), true);
+    }
+
+    #[test]
+    fn test_conway_rule_dead_cell_stays_dead() {
+        assert_eq!(conway_rule(false, 0), false);
+        assert_eq!(conway_rule(false, 1), false);
+        assert_eq!(conway_rule(false, 2), false);
+        assert_eq!(conway_rule(false, 4), false);
+    }
+
+    #[test]
+    fn test_highlife_rule_birth_with_3_neighbors() {
+        assert_eq!(highlife_rule(false, 3), true);
+    }
+
+    #[test]
+    fn test_highlife_rule_birth_with_6_neighbors() {
+        assert_eq!(highlife_rule(false, 6), true);
+    }
+
+    #[test]
+    fn test_highlife_rule_survive_with_2_neighbors() {
+        assert_eq!(highlife_rule(true, 2), true);
+    }
+
+    #[test]
+    fn test_highlife_rule_survive_with_3_neighbors() {
+        assert_eq!(highlife_rule(true, 3), true);
+    }
+
+    #[test]
+    fn test_highlife_rule_death() {
+        assert_eq!(highlife_rule(true, 0), false);
+        assert_eq!(highlife_rule(true, 1), false);
+        assert_eq!(highlife_rule(true, 4), false);
+        assert_eq!(highlife_rule(false, 2), false);
+        assert_eq!(highlife_rule(false, 5), false);
+    }
+
+    #[test]
+    fn test_day_and_night_rule_birth() {
+        assert_eq!(day_and_night_rule(false, 3), true);
+        assert_eq!(day_and_night_rule(false, 6), true);
+        assert_eq!(day_and_night_rule(false, 7), true);
+        assert_eq!(day_and_night_rule(false, 8), true);
+    }
+
+    #[test]
+    fn test_day_and_night_rule_survive() {
+        assert_eq!(day_and_night_rule(true, 3), true);
+        assert_eq!(day_and_night_rule(true, 4), true);
+        assert_eq!(day_and_night_rule(true, 6), true);
+        assert_eq!(day_and_night_rule(true, 7), true);
+        assert_eq!(day_and_night_rule(true, 8), true);
+    }
+
+    #[test]
+    fn test_day_and_night_rule_death() {
+        assert_eq!(day_and_night_rule(true, 0), false);
+        assert_eq!(day_and_night_rule(true, 1), false);
+        assert_eq!(day_and_night_rule(true, 2), false);
+        assert_eq!(day_and_night_rule(true, 5), false);
+        assert_eq!(day_and_night_rule(false, 0), false);
+        assert_eq!(day_and_night_rule(false, 2), false);
+        assert_eq!(day_and_night_rule(false, 5), false);
+    }
+
+    #[test]
+    fn test_parse_rule_conway() {
+        let rule = parse_rule("b3s23");
+        assert_eq!(rule(true, 2), true);
+        assert_eq!(rule(true, 3), true);
+        assert_eq!(rule(false, 3), true);
+        assert_eq!(rule(true, 4), false);
+    }
+
+    #[test]
+    fn test_parse_rule_highlife() {
+        let rule = parse_rule("b36s23");
+        assert_eq!(rule(false, 6), true);
+        assert_eq!(rule(false, 3), true);
+        assert_eq!(rule(true, 2), true);
+    }
+
+    #[test]
+    fn test_parse_rule_day_and_night() {
+        let rule = parse_rule("b3678s34678");
+        assert_eq!(rule(false, 8), true);
+        assert_eq!(rule(true, 4), true);
+    }
+
+    #[test]
+    fn test_parse_rule_invalid_defaults_to_conway() {
+        let rule = parse_rule("b45s67");
+        assert_eq!(rule(true, 2), true);
+        assert_eq!(rule(false, 3), true);
+    }
+}
