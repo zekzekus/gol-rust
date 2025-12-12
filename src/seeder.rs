@@ -183,11 +183,11 @@ mod tests {
         let width = 20;
         let height = 20;
         let grid = grid_center_five(width, height);
-        
+
         for col in (height / 2)..=(height / 2 + 5) {
             assert_eq!(grid.get(&(width / 2, col)), Some(&1));
         }
-        
+
         let alive_count = grid.values().filter(|&&v| v == 1).count();
         assert_eq!(alive_count, 6);
     }

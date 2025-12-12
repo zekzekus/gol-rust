@@ -67,7 +67,7 @@ impl bracket_lib::prelude::GameState for GameState {
 
         let mouse_pos = ctx.mouse_point();
         let mouse_left = ctx.left_click;
-        
+
         if let Some(mut input_state) = self.resources.get_mut::<InputState>() {
             input_state.mouse_pos = (mouse_pos.x, mouse_pos.y);
             input_state.mouse_left = mouse_left;
@@ -82,7 +82,7 @@ fn main() -> BError {
     // Force X11 backend on Linux to avoid Wayland compositor performance issues
     #[cfg(target_os = "linux")]
     env::remove_var("WAYLAND_DISPLAY");
-    
+
     let args: Vec<String> = env::args().collect();
     if args.len() < 5 {
         panic!("at least four arguments required! width, height, rule and initial board type");

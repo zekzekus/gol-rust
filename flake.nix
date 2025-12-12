@@ -52,7 +52,7 @@
       devShells = forEachSupportedSystem (
         { pkgs }:
         {
-          default = pkgs.mkShellNoCC {
+          default = pkgs.mkShell {
             packages = with pkgs; [
               rustToolchain
               openssl
@@ -60,7 +60,6 @@
               cargo-deny
               cargo-edit
               cargo-watch
-              rust-analyzer
               # Required for bracket-lib
               xorg.libX11
               xorg.libXcursor
