@@ -75,6 +75,17 @@
             env = {
               # Required by rust-analyzer
               RUST_SRC_PATH = "${pkgs.rustToolchain}/lib/rustlib/src/rust/library";
+              # Required for runtime linking of native libraries
+              LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+                pkgs.xorg.libX11
+                pkgs.xorg.libXcursor
+                pkgs.xorg.libXi
+                pkgs.xorg.libXrandr
+                pkgs.libGL
+                pkgs.freetype
+                pkgs.expat
+                pkgs.fontconfig
+              ];
             };
           };
         }
